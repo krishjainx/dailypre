@@ -1,0 +1,28 @@
+org: krishjain
+app: aws-python-http-api-project
+service: aws-python-http-api-project
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: python3.9
+  environment:
+    DB_NAME: krishdb
+    DB_USER: postgres
+    DB_PASSWORD: ikCNVfVJTdw7jGgto6sdjR&P!ps3CVZLMoLVzFwM
+    DB_HOST: krishdb.cou43tc1rilf.us-east-2.rds.amazonaws.com
+    DB_PORT: 5432
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - rds-db:connect
+      Resource: 'arn:aws:rds:us-east-2a:268883298368:db:krishdb'
+
+functions:
+  createUser:
+    handler: handler.create_user
+    timeout: 150
+    events:
+      - httpApi:
+          path: /create_user
+          method: post
