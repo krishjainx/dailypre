@@ -15,5 +15,12 @@ https://gist.github.com/ashwin-dailype/91356d6f074cd0c0014c9089bcfd4d6e
 
 
 POST https://sgzag2dov6.execute-api.us-east-1.amazonaws.com/dev/create_user
+
+
 GET https://sgzag2dov6.execute-api.us-east-1.amazonaws.com/dev/get_users
+
+
 DELETE https://sgzag2dov6.execute-api.us-east-1.amazonaws.com/dev/delete_user
+
+
+UPDATE https://sgzag2dov6.execute-api.us-east-1.amazonaws.com/dev/update_user
