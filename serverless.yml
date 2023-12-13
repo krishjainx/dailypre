@@ -3,26 +3,65 @@ app: aws-python-http-api-project
 service: aws-python-http-api-project
 frameworkVersion: '3'
 
+
+params:
+  default:
+    securityGroupId: [ 'sg-0bcb189ebd2619e12' ]
+    DBSubnetGroupName: vpc-0b42fe67d01530b48
+
+    
 provider:
   name: aws
-  runtime: python3.9
+  runtime: 'python3.9'
+  region: 'us-east-1'
   environment:
-    DB_NAME: krishdb
-    DB_USER: postgres
+    DB_NAME: testdb
+    DB_USER: krishjain
     DB_PASSWORD: ikCNVfVJTdw7jGgto6sdjR&P!ps3CVZLMoLVzFwM
-    DB_HOST: krishdb.cou43tc1rilf.us-east-2.rds.amazonaws.com
     DB_PORT: 5432
-  iamRoleStatements:
-    - Effect: Allow
-      Action:
-        - rds-db:connect
-      Resource: 'arn:aws:rds:us-east-2a:268883298368:db:krishdb'
+    DB_HOST: "aws-python-http-api-project-dev-rdsinstance-rvy1scvixxvy.cpzya7kuavkq.us-east-1.rds.amazonaws.com"
+  vpc:
+    securityGroupIds:
+      - sg-0481b236397cac103
+    subnetIds:
+      - subnet-091b657eaf6290848 
+      - subnet-00a33065fe7197298
+      - subnet-0863b506e681cd0ae 
+      - subnet-0002d3ae842b85fdd
+      - subnet-00ad70f0af063bc19 
+      - subnet-0d5b4fd15b121932f 
+
+resources:
+  Resources:
+    RDSInstance:
+      Type: AWS::RDS::DBInstance
+      Properties:
+        DBName: testdb
+        Engine: postgres
+        MasterUsername: "krishjain"
+        MasterUserPassword: "ikCNVfVJTdw7jGgto6sdjR&P!ps3CVZLMoLVzFwM"
+        AllocatedStorage: '50'
+        DBInstanceClass: "db.x2iedn.xlarge" # Specify the instance type
 
 functions:
-  createUser:
+  get_table:
     handler: handler.create_user
     timeout: 150
     events:
-      - httpApi:
-          path: /create_user
+      - http:
+          path: create_user
           method: post
+  get_table2:
+    handler: handler.get_users
+    timeout: 150
+    events:
+      - http:
+          path: get_users
+          method: get
+  get_table3:
+    handler: handler.delete_user
+    timeout: 150
+    events:
+      - http:
+          path: delete_user
+          method: delete
