@@ -23,7 +23,7 @@ GET https://sgzag2dov6.execute-api.us-east-1.amazonaws.com/dev/get_users
 DELETE https://sgzag2dov6.execute-api.us-east-1.amazonaws.com/dev/delete_user
 
 
-UPDATE https://sgzag2dov6.execute-api.us-east-1.amazonaws.com/dev/update_user
+PUT https://sgzag2dov6.execute-api.us-east-1.amazonaws.com/dev/update_user
 
 
 ![image](https://github.com/krishjainx/dailypre/assets/75043245/0c2524de-5dfd-4ef1-85a3-6143269891c2)
