@@ -65,3 +65,10 @@ functions:
       - http:
           path: delete_user
           method: delete
+  get_table4:
+    handler: handler.update_user
+    timeout: 150
+    events:
+      - http:
+          path: update_user
+          method: put

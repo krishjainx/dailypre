@@ -163,3 +163,71 @@ def delete_user(event, context):
     finally:
         cursor.close()
         conn.close()
+
+
+def update_user(event, context):
+    # Connect to the database
+    conn = psycopg2.connect(
+        dbname=DB_NAME, 
+        user=DB_USER, 
+        password=DB_PASSWORD, 
+        host=DB_HOST, 
+        port=DB_PORT
+    )
+    cursor = conn.cursor()
+
+    try:
+        # Parse input
+        data = json.loads(event['body'])
+        user_id = data.get('user_id', '')
+        update_data = data.get('update_data', {})
+
+        if not user_id:
+            return {'statusCode': 400, 'body': json.dumps('User ID is required.')}
+
+        # Check if user exists
+        cursor.execute("SELECT EXISTS(SELECT 1 FROM users WHERE user_id = %s);", (user_id,))
+        if not cursor.fetchone()[0]:
+            return {'statusCode': 404, 'body': json.dumps('User not found.')}
+
+        # Validation and building update query
+        update_parts = []
+        values = []
+
+        full_name = update_data.get('full_name', '').strip()
+        if full_name:
+            update_parts.append("full_name = %s")
+            values.append(full_name)
+
+        mob_num = update_data.get('mob_num', '')
+        if mob_num and not is_valid_mobile(mob_num):
+            return {'statusCode': 400, 'body': json.dumps('Invalid mobile number.')}
+
+        if mob_num:
+            update_parts.append("mob_num = %s")
+            values.append(mob_num)
+
+        pan_num = update_data.get('pan_num', '')
+        if pan_num and not is_valid_pan(pan_num):
+            return {'statusCode': 400, 'body': json.dumps('Invalid PAN number.')}
+
+        if pan_num:
+            update_parts.append("pan_num = %s")
+            values.append(pan_num)
+
+        if not update_parts:
+            return {'statusCode': 400, 'body': json.dumps('No valid update data provided.')}
+
+        update_query = "UPDATE users SET " + ", ".join(update_parts) + " WHERE user_id = %s;"
+        values.append(user_id)
+        cursor.execute(update_query, tuple(values))
+        conn.commit()
+
+        return {'statusCode': 200, 'body': json.dumps('User updated successfully.')}
+
+    except Exception as e:
+        return {'statusCode': 500, 'body': json.dumps(str(e))}
+
+    finally:
+        cursor.close()
+        conn.close()
